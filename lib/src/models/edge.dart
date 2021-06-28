@@ -1,9 +1,10 @@
 import 'dart:math';
 
-import 'constants.dart';
-import 'force.dart';
-import 'jiggle.dart';
-import 'lcg.dart';
+import '../helpers/constants.dart';
+import '../helpers/accessor.dart';
+import '../interfaces/force.dart';
+import '../helpers/jiggle.dart';
+import '../helpers/lcg.dart';
 import 'node.dart';
 
 class Edge<N extends Node> {

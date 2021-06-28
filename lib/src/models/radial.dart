@@ -1,7 +1,8 @@
 import 'dart:math';
 
-import 'constants.dart';
-import 'force.dart';
+import '../helpers/accessor.dart';
+import '../helpers/constants.dart';
+import '../interfaces/force.dart';
 import 'node.dart';
 
 class Radial<N extends Node> extends IForce<N> {

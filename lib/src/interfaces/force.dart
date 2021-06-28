@@ -1,6 +1,6 @@
-import 'package:d3_force_flutter/src/lcg.dart';
+import 'package:d3_force_flutter/src/helpers/lcg.dart';
 
-import 'node.dart';
+import '../models/node.dart';
 
 abstract class IForce<N extends Node> {
   IForce({required double strength}) : strength = strength;

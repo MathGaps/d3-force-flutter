@@ -1,6 +1,6 @@
-import 'constants.dart';
-import 'force.dart';
-import 'node.dart';
+import '../helpers/accessor.dart';
+import '../interfaces/force.dart';
+import '../models/node.dart';
 
 class XPositioning<N extends Node> extends IForce<N> {
   XPositioning({

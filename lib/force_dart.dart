@@ -1,3 +1,3 @@
 library force_dart;
 
-export 'src/force.dart';
+export 'src/interfaces/force.dart';

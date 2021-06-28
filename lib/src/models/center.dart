@@ -1,4 +1,4 @@
-import 'force.dart';
+import '../interfaces/force.dart';
 import 'node.dart';
 
 class Center<N extends Node> extends IForce<N> {

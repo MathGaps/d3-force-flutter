@@ -1,6 +1,6 @@
-import 'constants.dart';
-import 'force.dart';
-import 'lcg.dart';
+import '../interfaces/force.dart';
+import '../helpers/accessor.dart';
+import '../helpers/lcg.dart';
 import 'node.dart';
 
 class Collide<N extends Node> extends IForce<N> {
