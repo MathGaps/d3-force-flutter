@@ -98,6 +98,7 @@ class Edges<E extends Edge<N>, N extends Node> implements IForce<N> {
     for (int i = 0; i < m; i++) {
       final edge = edges[i];
       edge.index = i;
+      // TODO: edge source and target
 
       count[edge.source.index] += 1;
       count[edge.target.index] += 1;

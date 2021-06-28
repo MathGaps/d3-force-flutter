@@ -2,5 +2,12 @@ name: d3_force_flutter
 description: A new Flutter package project.
 version: 0.0.1
 
+# TODO: publish to pub.dev
+publish_to: "none"
+
+dependencies:
+  d3_quadtree_flutter:
+    git: https://github.com/MathGaps/d3-quadtree-flutter.git
+
 environment:
   sdk: ">=2.13.0 <3.0.0"
