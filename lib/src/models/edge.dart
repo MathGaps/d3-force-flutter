@@ -15,46 +15,48 @@ class Edge<N extends Node> {
   });
 
   int? index;
-  final N source;
-  final N target;
+  final N source, target;
 }
 
-class Edges<E extends Edge<N>, N extends Node> extends IForce<N> {
+class Edges<E extends Edge<N>, N extends Node> implements IForce<N> {
   Edges({
     required this.id,
-    AccessorCallback<double, E>? onStrength,
-    this.onDistance,
     this.iterations = 1,
-    this.distance = 30,
+    AccessorCallback<double, E>? onDistance,
+    AccessorCallback<double, E>? onStrength,
+    double distance = 30,
     List<E>? edges,
   })  : distances = [],
         strengths = [],
         count = [],
         bias = [],
-        super(strength: 0) {
-    this.edges = edges ?? [];
-
-    if (onStrength == null) {
-      onStrength = (E edge) {
-        return 1 / min(count[edge.source.index], count[edge.target.index]);
-      };
-    } else {
-      this.onStrength = onStrength;
-    }
+        edges = edges ?? [] {
+    _onStrength = onStrength ??
+        (E edge) => 1 / min(count[edge.source.index], count[edge.target.index]);
+    _onDistance = onDistance ?? (_) => distance;
   }
 
   final String id;
-  int iterations;
-  double distance;
+  @override
+  List<N>? nodes;
   late List<E> edges;
-  List<double> distances;
-  List<double> strengths;
+
+  int iterations;
+  List<double> distances, strengths, bias;
   List<int> count;
-  List<double> bias;
   LCG? random;
 
-  late AccessorCallback<double, E> onStrength;
-  AccessorCallback<double, E>? onDistance;
+  late AccessorCallback<double, E> _onStrength, _onDistance;
+
+  set onStrength(AccessorCallback<double, E> fn) {
+    _onStrength = fn;
+    _initialize();
+  }
+
+  set onDistance(AccessorCallback<double, E> fn) {
+    _onDistance = fn;
+    _initialize();
+  }
 
   int get m => edges.length;
 
@@ -66,12 +68,12 @@ class Edges<E extends Edge<N>, N extends Node> extends IForce<N> {
         final N source = edge.source;
         final N target = edge.target;
 
-        double x = target.x + target.vx - source.x - source.vx;
-        double y = target.y + target.vy - source.y - source.vy;
+        double x = target.x + target.vx - source.x - source.vx,
+            y = target.y + target.vy - source.y - source.vy;
 
         if (random != null) {
-          x = x.abs() < eps ? jiggle(random!) : x;
-          y = y.abs() < eps ? jiggle(random!) : y;
+          x == 0 ? jiggle(random!) : x;
+          y == 0 ? jiggle(random!) : y;
         }
 
         double l = sqrt(pow(x, 2) + pow(y, 2));
@@ -117,18 +119,12 @@ class Edges<E extends Edge<N>, N extends Node> extends IForce<N> {
 
   void initializeStrength() {
     if (nodes == null) return;
-
-    for (int i = 0; i < m; i++) {
-      strengths[i] = onStrength(edges[i]);
-    }
+    for (int i = 0; i < m; i++) strengths[i] = _onStrength(edges[i]);
   }
 
   void initializeDistance() {
     if (nodes == null) return;
-
-    for (int i = 0; i < m; i++) {
-      distances[i] = onDistance == null ? distance : onDistance!(edges[i]);
-    }
+    for (int i = 0; i < m; i++) distances[i] = _onDistance(edges[i]);
   }
 
   @override

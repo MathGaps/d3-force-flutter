@@ -1,5 +1,6 @@
 typedef AccessorCallback<R, T> = R Function(T);
 
+//? Unused but may reimplement
 class Accessor<R, T> {
   const Accessor(this.accessor, {this.callback});
 

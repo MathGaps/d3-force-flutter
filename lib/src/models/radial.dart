@@ -5,30 +5,33 @@ import '../helpers/constants.dart';
 import '../interfaces/force.dart';
 import 'node.dart';
 
-class Radial<N extends Node> extends IForce<N> {
+class Radial<N extends Node> implements IForce<N> {
   Radial({
-    required double radius,
     this.x = 0,
     this.y = 0,
     double strength = 0.1,
-    this.onRadius,
-    this.onStrength,
-  })  : _radius = radius,
-        super(strength: strength);
+    double radius = 0,
+    AccessorCallback<double, N>? onRadius,
+    AccessorCallback<double, N>? onStrength,
+  }) {
+    _onRadius = onRadius ?? (_) => radius;
+    _onStrength = onStrength ?? (_) => strength;
+  }
 
+  @override
+  List<N>? nodes;
   double x, y;
-  double _radius;
 
   late List<double> strengths, radiuses;
-  AccessorCallback<double, N>? onRadius, onStrength;
+  late AccessorCallback<double, N> _onRadius, _onStrength;
 
-  set radius(double r) {
-    _radius = r;
+  set onRadius(AccessorCallback<double, N> fn) {
+    _onRadius = fn;
     _initialize();
   }
 
-  set strength(double _strength) {
-    super.strength = _strength;
+  set onStrength(AccessorCallback<double, N> fn) {
+    _onStrength = fn;
     _initialize();
   }
 
@@ -37,8 +40,7 @@ class Radial<N extends Node> extends IForce<N> {
     for (int i = 0; i < n; i++) {
       final node = nodes![i];
 
-      double dx = node.x - x;
-      double dy = node.y - y;
+      double dx = node.x - x, dy = node.y - y;
       dx = dx.abs() < eps ? eps : dx;
       dy = dy.abs() < eps ? eps : dy;
 
@@ -55,10 +57,9 @@ class Radial<N extends Node> extends IForce<N> {
     strengths = List.filled(n, 0);
 
     for (int i = 0; i < n; i++) {
-      radiuses[i] = onRadius == null ? _radius : onRadius!(nodes![i]);
-      if (!radiuses[i].isNaN) {
-        strengths[i] = onStrength == null ? strength : onStrength!(nodes![i]);
-      }
+      final node = nodes![i];
+      if (!(radiuses[i] = _onRadius(node)).isNaN)
+        strengths[i] = _onStrength(node);
     }
   }
 

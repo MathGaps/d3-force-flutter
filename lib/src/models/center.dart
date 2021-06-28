@@ -1,12 +1,18 @@
 import '../interfaces/force.dart';
 import 'node.dart';
 
-class Center<N extends Node> extends IForce<N> {
+class Center<N extends Node> implements IForce<N> {
   Center({
     this.x = 0,
     this.y = 0,
     double strength = 1,
-  }) : super(strength: strength);
+  }) : _strength = strength;
+
+  @override
+  List<N>? nodes;
+
+  double _strength;
+  set strength(double strength) => _strength = strength;
 
   double x, y;
 
@@ -20,8 +26,8 @@ class Center<N extends Node> extends IForce<N> {
       sy += node.y;
     }
 
-    sx = (sx / n - x) * strength;
-    sy = (sy / n - y) * strength;
+    sx = (sx / n - x) * _strength;
+    sy = (sy / n - y) * _strength;
     for (final node in nodes!) {
       node.x -= sx;
       node.y -= sy;

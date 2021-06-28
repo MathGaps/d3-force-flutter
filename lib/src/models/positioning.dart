@@ -2,32 +2,32 @@ import '../helpers/accessor.dart';
 import '../interfaces/force.dart';
 import '../models/node.dart';
 
-class XPositioning<N extends Node> extends IForce<N> {
+class XPositioning<N extends Node> implements IForce<N> {
   XPositioning({
     double x = 0,
     double strength = 0.1,
-    this.onStrength,
-    this.onX,
-  })  : _x = x,
-        _strengths = [],
-        _xz = [],
-        super(strength: strength);
+    AccessorCallback<double, N>? onStrength,
+    AccessorCallback<double, N>? onX,
+  })  : _strengths = [],
+        _xz = [] {
+    _onStrength = onStrength ?? (_) => strength;
+    _onX = onX ?? (_) => x;
+  }
 
-  AccessorCallback<double, N>? onStrength;
-  AccessorCallback<double, N>? onX;
-  List<double> _strengths;
-  List<double> _xz;
-
-  double _x;
-  set x(double x) {
-    _x = x;
+  late AccessorCallback<double, N> _onStrength, _onX;
+  set onStrength(AccessorCallback<double, N> fn) {
+    _onStrength = fn;
     _initialize();
   }
 
-  set strength(double _strength) {
-    super.strength = _strength;
+  set onX(AccessorCallback<double, N> fn) {
+    _onX = fn;
     _initialize();
   }
+
+  @override
+  List<N>? nodes;
+  List<double> _strengths, _xz;
 
   @override
   void call([double alpha = 1]) {
@@ -43,45 +43,43 @@ class XPositioning<N extends Node> extends IForce<N> {
 
     for (int i = 0; i < n; i++) {
       final node = nodes![i];
-      _xz[i] = onX == null ? _x : onX!(node);
-      if (!_x.isNaN)
-        _strengths[i] = onStrength == null ? strength : onStrength!(node);
+      if (!(_xz[i] = _onX(node)).isNaN) _strengths[i] = _onStrength(node);
     }
   }
 
   @override
-  void initialize(List<N> _nodes, [_]) {
+  void initialize(List<N> _nodes, _) {
     nodes = _nodes;
     _initialize();
   }
 }
 
-class YPositioning<N extends Node> extends IForce<N> {
+class YPositioning<N extends Node> implements IForce<N> {
   YPositioning({
     double y = 0,
     double strength = 0.1,
-    this.onStrength,
-    this.onY,
-  })  : _y = y,
-        _strengths = [],
-        _yz = [],
-        super(strength: strength);
+    AccessorCallback<double, N>? onStrength,
+    AccessorCallback<double, N>? onY,
+  })  : _strengths = [],
+        _yz = [] {
+    _onStrength = onStrength ?? (_) => strength;
+    _onY = onY ?? (_) => y;
+  }
 
-  AccessorCallback<double, N>? onStrength;
-  AccessorCallback<double, N>? onY;
-  List<double> _strengths;
-  List<double> _yz;
-
-  double _y;
-  set y(double y) {
-    _y = y;
+  late AccessorCallback<double, N> _onStrength, _onY;
+  set onStrength(AccessorCallback<double, N> fn) {
+    _onStrength = fn;
     _initialize();
   }
 
-  set strength(double _strength) {
-    super.strength = _strength;
+  set onY(AccessorCallback<double, N> fn) {
+    _onY = fn;
     _initialize();
   }
+
+  @override
+  List<N>? nodes;
+  List<double> _strengths, _yz;
 
   @override
   void call([double alpha = 1]) {
@@ -97,9 +95,7 @@ class YPositioning<N extends Node> extends IForce<N> {
 
     for (int i = 0; i < n; i++) {
       final node = nodes![i];
-      _yz[i] = onY == null ? _y : onY!(node);
-      if (!_yz[i].isNaN)
-        _strengths[i] = onStrength == null ? strength : onStrength!(node);
+      if (!(_yz[i] = _onY(node)).isNaN) _strengths[i] = _onStrength(node);
     }
   }
 

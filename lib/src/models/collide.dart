@@ -3,24 +3,30 @@ import '../helpers/accessor.dart';
 import '../helpers/lcg.dart';
 import 'node.dart';
 
-class Collide<N extends Node> extends IForce<N> {
+class Collide<N extends Node> implements IForce<N> {
   Collide({
     this.iterations = 1,
-    this.radius = 1,
+    double radius = 1,
     double strength = 1,
     AccessorCallback<double, N>? onRadius,
-  })  : _radii = [],
-        _onRadius = onRadius,
-        super(strength: strength);
+  })  : _strength = strength,
+        _radii = [] {
+    _onRadius = onRadius ?? (_) => radius;
+  }
 
-  final double radius;
+  @override
+  List<N>? nodes;
+
+  double _strength;
+  set strength(double strength) => _strength = strength;
+
   int iterations;
   LCG? random;
 
-  AccessorCallback<double, N>? _onRadius;
   List<double> _radii;
   Quadtree<O> _quadtree;
 
+  AccessorCallback<double, N>? _onRadius;
   set onRadius(AccessorCallback<double, N>? fn) {
     _onRadius = fn;
     _initialize();
