@@ -41,8 +41,8 @@ class Radial<N extends Node> implements IForce<N> {
       final node = nodes![i];
 
       double dx = node.x - x, dy = node.y - y;
-      dx = dx.abs() < eps ? eps : dx;
-      dy = dy.abs() < eps ? eps : dy;
+      if (dx == 0) dx = eps;
+      if (dy == 0) dy = eps;
 
       final r = sqrt(pow(dx, 2) + pow(dy, 2));
       final k = (radiuses[i] - r) * strengths[i] * alpha / r;
