@@ -7,11 +7,7 @@ final lcg = LCG();
 
 class LCG {
   LCG([this.x = 1]);
-
   double x;
 
-  double call() {
-    x = (a * x + c) % m;
-    return x / m;
-  }
+  double call() => (x = (a * x + c) % m) / m;
 }

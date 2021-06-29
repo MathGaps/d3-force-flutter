@@ -108,7 +108,7 @@ class Collide<N extends Node> implements IForce<N> {
     if (nodes == null) return;
 
     _radii = List.filled(n, 0);
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i) {
       final node = nodes![i];
       _radii[node.index!] = _radius(node);
     }
