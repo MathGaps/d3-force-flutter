@@ -3,8 +3,8 @@ import 'package:quiver/core.dart';
 
 class Node implements IPoint {
   Node({
-    required this.x,
-    required this.y,
+    this.x = double.nan,
+    this.y = double.nan,
     this.index,
     this.vx = 0,
     this.vy = 0,

@@ -17,7 +17,7 @@ class ForceSimulation<N extends Node> {
         _forces = {},
         _random = random ?? LCG(),
         _nodes = nodes ?? [] {
-    alphaDecay = alphaDecay ?? pow(alphaMin, 1 / 300).toDouble();
+    this.alphaDecay = alphaDecay ?? pow(alphaMin, 1 / 300).toDouble();
     _initializeNodes();
   }
 
