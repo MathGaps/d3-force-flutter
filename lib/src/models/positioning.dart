@@ -10,18 +10,18 @@ class XPositioning<N extends Node> implements IForce<N> {
     AccessorCallback<double, N>? onX,
   })  : _strengths = [],
         _xz = [] {
-    _onStrength = onStrength ?? (_) => strength;
-    _onX = onX ?? (_) => x;
+    _strength = onStrength ?? (_) => strength;
+    _x = onX ?? (_) => x;
   }
 
-  late AccessorCallback<double, N> _onStrength, _onX;
-  set onStrength(AccessorCallback<double, N> fn) {
-    _onStrength = fn;
+  late AccessorCallback<double, N> _strength, _x;
+  set strength(AccessorCallback<double, N> fn) {
+    _strength = fn;
     _initialize();
   }
 
-  set onX(AccessorCallback<double, N> fn) {
-    _onX = fn;
+  set x(AccessorCallback<double, N> fn) {
+    _x = fn;
     _initialize();
   }
 
@@ -43,7 +43,7 @@ class XPositioning<N extends Node> implements IForce<N> {
 
     for (int i = 0; i < n; i++) {
       final node = nodes![i];
-      if (!(_xz[i] = _onX(node)).isNaN) _strengths[i] = _onStrength(node);
+      if (!(_xz[i] = _x(node)).isNaN) _strengths[i] = _strength(node);
     }
   }
 

@@ -16,7 +16,7 @@ class Collide<N extends Node> implements IForce<N> {
     AccessorCallback<double, N>? onRadius,
   })  : _strength = strength,
         _radii = [] {
-    _onRadius = onRadius ?? (_) => radius;
+    _radius = onRadius ?? (_) => radius;
   }
 
   @override
@@ -34,9 +34,9 @@ class Collide<N extends Node> implements IForce<N> {
   LCG? random;
   List<double> _radii;
 
-  late AccessorCallback<double, N> _onRadius;
-  set onRadius(AccessorCallback<double, N> fn) {
-    _onRadius = fn;
+  late AccessorCallback<double, N> _radius;
+  set radius(AccessorCallback<double, N> fn) {
+    _radius = fn;
     _initialize();
   }
 
@@ -110,7 +110,7 @@ class Collide<N extends Node> implements IForce<N> {
     _radii = List.filled(n, 0);
     for (int i = 0; i < n; i++) {
       final node = nodes![i];
-      _radii[node.index!] = _onRadius(node);
+      _radii[node.index!] = _radius(node);
     }
   }
 

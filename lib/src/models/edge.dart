@@ -31,10 +31,10 @@ class Edges<E extends Edge<N>, N extends Node> implements IForce<N> {
         bias = [],
         _edges = edges ?? [] {
     // _id = id ?? (n) => n.index;
-    _onStrength = onStrength ??
+    _strength = onStrength ??
         (E edge) =>
             1 / min(count[edge.source.index!], count[edge.target.index!]);
-    _onDistance = onDistance ?? (_) => distance;
+    _distance = onDistance ?? (_) => distance;
   }
 
   // TODO: make dynamic
@@ -48,15 +48,15 @@ class Edges<E extends Edge<N>, N extends Node> implements IForce<N> {
   List<int> count;
   LCG? random;
 
-  late AccessorCallback<double, E> _onStrength, _onDistance;
+  late AccessorCallback<double, E> _strength, _distance;
 
-  set onStrength(AccessorCallback<double, E> fn) {
-    _onStrength = fn;
+  set strength(AccessorCallback<double, E> fn) {
+    _strength = fn;
     _initialize();
   }
 
-  set onDistance(AccessorCallback<double, E> fn) {
-    _onDistance = fn;
+  set distance(AccessorCallback<double, E> fn) {
+    _distance = fn;
     _initialize();
   }
 
@@ -127,12 +127,12 @@ class Edges<E extends Edge<N>, N extends Node> implements IForce<N> {
 
   void initializeStrength() {
     if (nodes == null) return;
-    for (int i = 0; i < m; i++) strengths[i] = _onStrength(_edges[i]);
+    for (int i = 0; i < m; i++) strengths[i] = _strength(_edges[i]);
   }
 
   void initializeDistance() {
     if (nodes == null) return;
-    for (int i = 0; i < m; i++) distances[i] = _onDistance(_edges[i]);
+    for (int i = 0; i < m; i++) distances[i] = _distance(_edges[i]);
   }
 
   @override

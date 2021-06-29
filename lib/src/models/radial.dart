@@ -14,8 +14,8 @@ class Radial<N extends Node> implements IForce<N> {
     AccessorCallback<double, N>? onRadius,
     AccessorCallback<double, N>? onStrength,
   }) {
-    _onRadius = onRadius ?? (_) => radius;
-    _onStrength = onStrength ?? (_) => strength;
+    _radius = onRadius ?? (_) => radius;
+    _strength = onStrength ?? (_) => strength;
   }
 
   @override
@@ -23,15 +23,15 @@ class Radial<N extends Node> implements IForce<N> {
   double x, y;
 
   late List<double> strengths, radiuses;
-  late AccessorCallback<double, N> _onRadius, _onStrength;
+  late AccessorCallback<double, N> _radius, _strength;
 
-  set onRadius(AccessorCallback<double, N> fn) {
-    _onRadius = fn;
+  set radius(AccessorCallback<double, N> fn) {
+    _radius = fn;
     _initialize();
   }
 
-  set onStrength(AccessorCallback<double, N> fn) {
-    _onStrength = fn;
+  set strength(AccessorCallback<double, N> fn) {
+    _strength = fn;
     _initialize();
   }
 
@@ -58,8 +58,7 @@ class Radial<N extends Node> implements IForce<N> {
 
     for (int i = 0; i < n; i++) {
       final node = nodes![i];
-      if (!(radiuses[i] = _onRadius(node)).isNaN)
-        strengths[i] = _onStrength(node);
+      if (!(radiuses[i] = _radius(node)).isNaN) strengths[i] = _strength(node);
     }
   }
 

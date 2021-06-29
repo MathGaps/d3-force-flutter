@@ -19,7 +19,7 @@ class ManyBody<N extends Node> implements IForce<N> {
         _distanceMax2 = distanceMax2,
         _theta2 = theta2,
         _strengths = [] {
-    _onStrength = onStrength ?? (_) => strength;
+    _strength = onStrength ?? (_) => strength;
   }
 
   @override
@@ -47,9 +47,9 @@ class ManyBody<N extends Node> implements IForce<N> {
     this();
   }
 
-  late AccessorCallback<double, N> _onStrength;
-  set onStrength(AccessorCallback<double, N> fn) {
-    _onStrength = fn;
+  late AccessorCallback<double, N> _strength;
+  set strength(AccessorCallback<double, N> fn) {
+    _strength = fn;
     _initialize();
   }
 
@@ -166,7 +166,7 @@ class ManyBody<N extends Node> implements IForce<N> {
     _strengths = List.filled(n, 0);
     for (int i = 0; i < n; i++) {
       _node = nodes![i];
-      _strengths[_node!.index!] = _onStrength(_node!);
+      _strengths[_node!.index!] = _strength(_node!);
     }
   }
 

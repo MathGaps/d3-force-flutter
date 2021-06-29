@@ -22,7 +22,7 @@ class Node implements IPoint {
   @override
   Node get copy => Node(x: x, y: y, index: index, vx: vx, vy: vy);
   @override
-  bool get isNaN => throw UnimplementedError();
+  bool get isNaN => x.isNaN || y.isNaN;
 
   @override
   bool operator ==(Object o) =>

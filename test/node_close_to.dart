@@ -1,7 +1,7 @@
 import 'package:d3_force_flutter/src/models/node.dart';
 import 'package:test/test.dart';
 
-Matcher nodeCloseTo<N extends Node>(N value, double delta) =>
+Matcher nodeCloseTo<N extends Node>(N value, [double delta = 1e-6]) =>
     _NodeCloseTo(value, delta);
 
 class _NodeCloseTo<N extends Node> extends FeatureMatcher<N> {
