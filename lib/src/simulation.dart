@@ -81,7 +81,7 @@ class ForceSimulation<N extends Node> {
 
   IForce? getForce(String name) => _forces[name];
 
-  void tick({int iterations = 1}) {
+  void tick([int iterations = 1]) {
     for (var k = 0; k < iterations; ++k) {
       alpha += (alphaTarget - alpha) * alphaDecay;
 
