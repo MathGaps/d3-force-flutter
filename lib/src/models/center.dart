@@ -2,9 +2,9 @@ import '../interfaces/force.dart';
 import 'node.dart';
 
 class Center<N extends Node> implements IForce<N> {
-  Center({
-    this.x = 0,
-    this.y = 0,
+  Center(
+    this.x,
+    this.y, {
     double strength = 1,
   }) : _strength = strength;
 

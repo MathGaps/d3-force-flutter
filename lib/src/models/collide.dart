@@ -50,7 +50,7 @@ class Collide<N extends Node> implements IForce<N> {
 
     for (var i = 0; i < n; ++i) {
       node = nodes![i];
-      ri = _radii[node.index];
+      ri = _radii[node.index!];
       ri2 = ri * ri;
       xi = node.x + node.vx;
       yi = node.y + node.vy;
@@ -61,7 +61,7 @@ class Collide<N extends Node> implements IForce<N> {
   bool _apply(IQuadtreeNode<N>? quad, Extent e) {
     double rj = quad?.r ?? 0, r = ri + rj;
     if (quad is ILeafNode<N>) {
-      if (quad.point.index > node.index) {
+      if (quad.point.index! > node.index!) {
         final N point = quad.point;
         double x = xi - point.x - point.vx,
             y = yi - point.y - point.vy,
@@ -94,7 +94,7 @@ class Collide<N extends Node> implements IForce<N> {
 
   bool prepare(IQuadtreeNode<N>? quad, Extent _) {
     if (quad is ILeafNode<N>) {
-      quad.r = _radii[quad.point.index];
+      quad.r = _radii[quad.point.index!];
       return quad.r != 0;
     } else {
       for (final node in [...?(quad as IInternalNode<N>?)?.nodes]) {
@@ -110,7 +110,7 @@ class Collide<N extends Node> implements IForce<N> {
     _radii = List.filled(n, 0);
     for (int i = 0; i < n; i++) {
       final node = nodes![i];
-      _radii[node.index] = _onRadius(node);
+      _radii[node.index!] = _onRadius(node);
     }
   }
 

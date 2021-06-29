@@ -8,6 +8,11 @@ publish_to: "none"
 dependencies:
   d3_quadtree_flutter:
     git: https://github.com/MathGaps/d3-quadtree-flutter.git
+  quiver: ^3.0.1
+
+dev_dependencies:
+  test: ^1.17.8
+  very_good_analysis: ^2.1.2
 
 environment:
   sdk: ">=2.13.0 <3.0.0"

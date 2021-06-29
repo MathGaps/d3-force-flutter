@@ -32,7 +32,8 @@ class Edges<E extends Edge<N>, N extends Node> implements IForce<N> {
         _edges = edges ?? [] {
     // _id = id ?? (n) => n.index;
     _onStrength = onStrength ??
-        (E edge) => 1 / min(count[edge.source.index], count[edge.target.index]);
+        (E edge) =>
+            1 / min(count[edge.source.index!], count[edge.target.index!]);
     _onDistance = onDistance ?? (_) => distance;
   }
 
@@ -106,15 +107,15 @@ class Edges<E extends Edge<N>, N extends Node> implements IForce<N> {
       final edge = _edges[i];
       edge.index = i;
       // edge.source = find(nodebyId, edge.source);
-      count[edge.source.index] += 1;
-      count[edge.target.index] += 1;
+      count[edge.source.index!] += 1;
+      count[edge.target.index!] += 1;
     }
 
     bias = List.filled(m, 0);
     for (int i = 0; i < m; i++) {
       final edge = _edges[i];
-      final totalDegree = count[edge.source.index] + count[edge.target.index];
-      bias[i] = count[edge.source.index] / totalDegree;
+      final totalDegree = count[edge.source.index!] + count[edge.target.index!];
+      bias[i] = count[edge.source.index!] / totalDegree;
     }
 
     strengths = List.filled(m, 0);

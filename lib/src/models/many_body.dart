@@ -116,7 +116,7 @@ class ManyBody<N extends Node> implements IForce<N> {
     if (quad is ILeafNode<N> && quad.point != _node) {
       do {
         quad = quad as ILeafNode<N>;
-        w = _strengths[quad.point.index] * _alpha / l;
+        w = _strengths[quad.point.index!] * _alpha / l;
         _node!
           ..vx += x * w
           ..vy += y * w;
@@ -152,7 +152,7 @@ class ManyBody<N extends Node> implements IForce<N> {
         ..fx = quad.point.x
         ..fy = quad.point.y;
       do {
-        strength += _strengths[q!.point.index];
+        strength += _strengths[q!.point.index!];
       } while ((q = q.next) != null);
     }
 
@@ -166,7 +166,7 @@ class ManyBody<N extends Node> implements IForce<N> {
     _strengths = List.filled(n, 0);
     for (int i = 0; i < n; i++) {
       _node = nodes![i];
-      _strengths[_node!.index] = _onStrength(_node!);
+      _strengths[_node!.index!] = _onStrength(_node!);
     }
   }
 

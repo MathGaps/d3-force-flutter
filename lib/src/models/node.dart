@@ -1,10 +1,11 @@
 import 'package:d3_quadtree_flutter/d3_quadtree_flutter.dart';
+import 'package:quiver/core.dart';
 
 class Node implements IPoint {
   Node({
-    required this.index,
     required this.x,
     required this.y,
+    this.index,
     this.vx = 0,
     this.vy = 0,
   }) {
@@ -12,7 +13,7 @@ class Node implements IPoint {
     if (vy.isNaN) vy = 0;
   }
 
-  int index;
+  int? index;
   double x, y, vx, vy;
   double? fx, fy;
 
@@ -20,4 +21,23 @@ class Node implements IPoint {
   Node get copy => Node(x: x, y: y, index: index, vx: vx, vy: vy);
   @override
   bool get isNaN => throw UnimplementedError();
+
+  @override
+  bool operator ==(Object o) =>
+      o is Node &&
+      x == o.x &&
+      y == o.y &&
+      index == o.index &&
+      vx == o.vx &&
+      vy == o.vy;
+  @override
+  int get hashCode => hashObjects([x, y, index, vx, vy]);
+  @override
+  String toString() {
+    return {
+      'index': index,
+      'position': '($x, $y)',
+      'velocity': '($vx, $vy)',
+    }.toString();
+  }
 }
