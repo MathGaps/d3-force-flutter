@@ -95,8 +95,12 @@ class ManyBody<N extends Node> implements IForce<N> {
           ..vy += y * quad.value! * _alpha / l;
       }
       return true;
-    } else if (quad is IInternalNode<N> || l >= _distanceMax2) return false;
+    }
 
+    // Otherwise, process points directly.
+    else if (quad is IInternalNode<N> || l >= _distanceMax2) return false;
+
+    // Limit forces for very close nodes; randomize direction if coincident.
     if (quad is ILeafNode<N> && (quad.point != _node || quad.next != null)) {
       if (x == 0) {
         x = jiggle(random!);

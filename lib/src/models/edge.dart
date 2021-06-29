@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import '../helpers/constants.dart';
 import '../helpers/accessor.dart';
 import '../interfaces/force.dart';
 import '../helpers/jiggle.dart';
@@ -20,8 +19,8 @@ class Edge<N extends Node> {
 
 class Edges<E extends Edge<N>, N extends Node> implements IForce<N> {
   Edges({
-    required this.id,
     this.iterations = 1,
+    // int Function(N)? id,
     AccessorCallback<double, E>? onDistance,
     AccessorCallback<double, E>? onStrength,
     double distance = 30,
@@ -30,16 +29,18 @@ class Edges<E extends Edge<N>, N extends Node> implements IForce<N> {
         strengths = [],
         count = [],
         bias = [],
-        edges = edges ?? [] {
+        _edges = edges ?? [] {
+    // _id = id ?? (n) => n.index;
     _onStrength = onStrength ??
         (E edge) => 1 / min(count[edge.source.index], count[edge.target.index]);
     _onDistance = onDistance ?? (_) => distance;
   }
 
-  final String id;
+  // TODO: make dynamic
+  // late int Function(N) _id;
   @override
   List<N>? nodes;
-  late List<E> edges;
+  late List<E> _edges;
 
   int iterations;
   List<double> distances, strengths, bias;
@@ -58,13 +59,18 @@ class Edges<E extends Edge<N>, N extends Node> implements IForce<N> {
     _initialize();
   }
 
-  int get m => edges.length;
+  set edges(List<E> edges) {
+    _edges = edges;
+    this();
+  }
+
+  int get m => _edges.length;
 
   @override
   void call([double alpha = 1]) {
     for (int k = 0; k < iterations; k++) {
-      for (int i = 0; i < n; i++) {
-        final edge = edges[i];
+      for (int i = 0; i < m; i++) {
+        final edge = _edges[i];
         final N source = edge.source;
         final N target = edge.target;
 
@@ -76,17 +82,17 @@ class Edges<E extends Edge<N>, N extends Node> implements IForce<N> {
           y == 0 ? jiggle(random!) : y;
         }
 
-        double l = sqrt(pow(x, 2) + pow(y, 2));
+        double l = sqrt(x * x + y * y);
         l = (l - distances[i]) / l * alpha * strengths[i];
-
         x *= l;
         y *= l;
 
         final b = bias[i];
-        edge.target.vx -= x * b;
-        edge.target.vy -= y * b;
-        edge.source.vx += x * (1 - b);
-        edge.source.vy += y * (1 - b);
+        edge
+          ..target.vx -= x * b
+          ..target.vy -= y * b
+          ..source.vx += x * (1 - b)
+          ..source.vy += y * (1 - b);
       }
     }
   }
@@ -94,19 +100,19 @@ class Edges<E extends Edge<N>, N extends Node> implements IForce<N> {
   void _initialize() {
     if (nodes == null) return;
     count = List.filled(n, 0);
+    // final nodeById = {for (final n in nodes!) _id(n): n};
 
     for (int i = 0; i < m; i++) {
-      final edge = edges[i];
+      final edge = _edges[i];
       edge.index = i;
-      // TODO: edge source and target
-
+      // edge.source = find(nodebyId, edge.source);
       count[edge.source.index] += 1;
       count[edge.target.index] += 1;
     }
 
     bias = List.filled(m, 0);
     for (int i = 0; i < m; i++) {
-      final edge = edges[i];
+      final edge = _edges[i];
       final totalDegree = count[edge.source.index] + count[edge.target.index];
       bias[i] = count[edge.source.index] / totalDegree;
     }
@@ -120,12 +126,12 @@ class Edges<E extends Edge<N>, N extends Node> implements IForce<N> {
 
   void initializeStrength() {
     if (nodes == null) return;
-    for (int i = 0; i < m; i++) strengths[i] = _onStrength(edges[i]);
+    for (int i = 0; i < m; i++) strengths[i] = _onStrength(_edges[i]);
   }
 
   void initializeDistance() {
     if (nodes == null) return;
-    for (int i = 0; i < m; i++) distances[i] = _onDistance(edges[i]);
+    for (int i = 0; i < m; i++) distances[i] = _onDistance(_edges[i]);
   }
 
   @override
@@ -134,4 +140,10 @@ class Edges<E extends Edge<N>, N extends Node> implements IForce<N> {
     random = _random;
     _initialize();
   }
+
+  // N find(Map<String, N> nodeById, String nodeId) {
+  //   final node = nodeById[nodeId];
+  //   if (node == null) throw StateError('Node not found: $nodeId');
+  //   return node;
+  // }
 }
