@@ -81,6 +81,32 @@ class ForceSimulation<N extends Node> {
 
   IForce? getForce(String name) => _forces[name];
 
+  void tick({int iterations = 1}) {
+    for (var k = 0; k < iterations; ++k) {
+      alpha += (alphaTarget - alpha) * alphaDecay;
+
+      _forces.values.forEach((force) => force(alpha));
+
+      // Verlet integration
+      for (final node in nodes) {
+        if (node.fx == null)
+          node.x += node.vx *= velocityDecay;
+        else {
+          node
+            ..x = node.fx!
+            ..vx = 0;
+        }
+        if (node.fy == null)
+          node.y += node.vy *= velocityDecay;
+        else {
+          node
+            ..y = node.fy!
+            ..vy = 0;
+        }
+      }
+    }
+  }
+
   N? find(double x, double y, [double radius = double.infinity]) {
     late double dx, dy, d2;
     N? closest;
