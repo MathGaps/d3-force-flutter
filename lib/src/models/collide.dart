@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:d3_force_flutter/src/helpers/jiggle.dart';
-import 'package:d3_force_flutter/src/models/point.dart';
 import 'package:d3_quadtree_flutter/d3_quadtree_flutter.dart';
 
 import '../interfaces/force.dart';

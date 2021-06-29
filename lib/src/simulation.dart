@@ -1,1 +1,1 @@
-class ForceDirectedGraph {}
+class ForceSimulation {}
