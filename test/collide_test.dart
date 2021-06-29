@@ -1,4 +1,3 @@
-import 'package:d3_force_flutter/src/models/center.dart';
 import 'package:d3_force_flutter/src/models/collide.dart';
 import 'package:d3_force_flutter/src/models/node.dart';
 import 'package:d3_force_flutter/src/simulation.dart';
