@@ -8,6 +8,8 @@ class Node implements IPoint {
     this.index,
     this.vx = 0,
     this.vy = 0,
+    this.fx,
+    this.fy,
   }) {
     if (vx.isNaN) vx = 0;
     if (vy.isNaN) vy = 0;
