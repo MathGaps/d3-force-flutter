@@ -6,10 +6,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "6a1f4fb95da589551d94a1110a1047db05434e39"
+      resolved-ref: efe1edf3335867b1b9e69cdee446472c0c8b76ed
       url: "https://github.com/MathGaps/d3-quadtree-flutter.git"
     source: git
-    version: "0.0.4"
+    version: "0.0.2"
   matcher:
     dependency: transitive
     description:

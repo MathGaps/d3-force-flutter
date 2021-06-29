@@ -54,36 +54,38 @@ class Collide<N extends Node> implements IForce<N> {
       ri2 = ri * ri;
       xi = node.x + node.vx;
       yi = node.y + node.vy;
-      _tree.visit(apply);
+      _tree.visit(_apply);
     }
   }
 
-  bool apply(IQuadtreeNode<N>? quad, Extent e) {
+  bool _apply(IQuadtreeNode<N>? quad, Extent e) {
     double rj = quad?.r ?? 0, r = ri + rj;
-    if (quad is ILeafNode<N> && quad.point.index > node.index) {
-      final N point = quad.point;
-      double x = xi - point.x - point.vx,
-          y = yi - point.y - point.vy,
-          l = x * x + y * y;
+    if (quad is ILeafNode<N>) {
+      if (quad.point.index > node.index) {
+        final N point = quad.point;
+        double x = xi - point.x - point.vx,
+            y = yi - point.y - point.vy,
+            l = x * x + y * y;
 
-      if (l < r * r) {
-        if (random != null) {
-          if (x == 0) {
-            x = jiggle(random!);
-            l += x * x;
+        if (l < r * r) {
+          if (random != null) {
+            if (x == 0) {
+              x = jiggle(random!);
+              l += x * x;
+            }
+            if (y == 0) {
+              y = jiggle(random!);
+              l += y * y;
+            }
           }
-          if (y == 0) {
-            y = jiggle(random!);
-            l += y * y;
-          }
+          l = (r - (l = sqrt(l))) / l * _strength;
+          node
+            ..vx += (x *= l) * (r = (rj *= rj) / (ri2 + rj))
+            ..vy += (y *= l) * r;
+          quad.point
+            ..vx -= x * (r = 1 - r)
+            ..vy -= y * r;
         }
-        l = (r - (l = sqrt(l))) / l * _strength;
-        node
-          ..vx += (x *= l) * (r = (rj *= rj) / (ri2 + rj))
-          ..vy += (y *= l) * r;
-        quad.point
-          ..vx -= x * (r = 1 - r)
-          ..vy -= y * r;
       }
       return false;
     }
