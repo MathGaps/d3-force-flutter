@@ -18,6 +18,7 @@ class _CanvasScreenState extends State<CanvasScreen>
   late final Ticker _ticker;
   late final f.ForceSimulation simulation;
   late final List<f.Edge> edges;
+  int i = 0;
 
   @override
   void didChangeDependencies() {
@@ -27,8 +28,8 @@ class _CanvasScreenState extends State<CanvasScreen>
     final r = Random();
     edges = [
       for (final n in nodes)
-        if (r.nextDouble() < 0.1) ...[
-          for (int i = 0; i < (r.nextDouble() * 10).toInt(); i++)
+        if (r.nextDouble() < 0.6) ...[
+          for (int i = 0; i < (r.nextDouble() * 5).toInt(); i++)
             f.Edge(
               source: n,
               target: nodes[(nodes.length * r.nextDouble()).toInt()],
@@ -37,14 +38,18 @@ class _CanvasScreenState extends State<CanvasScreen>
     ];
     simulation = f.ForceSimulation()
       ..nodes = nodes
-      ..setForce('collide', f.Collide(strength: 2, radius: 5))
-      ..setForce('manyBody', f.ManyBody(strength: -5))
+      ..setForce('collide', f.Collide(radius: 5))
+      ..setForce('manyBody', f.ManyBody())
       ..setForce(
         'edges',
-        f.Edges(distance: 40, edges: edges),
-      );
+        f.Edges(edges: edges, distance: 15),
+      )
+      ..alpha = 1
+      ..tick(10);
 
     _ticker = this.createTicker((_) {
+      i++;
+      // if (i % 10 != 0) return;
       setState(() {
         simulation.tick();
       });
@@ -67,18 +72,19 @@ class _CanvasScreenState extends State<CanvasScreen>
         child: SimulationCanvas(
           children: [
             for (final node in simulation.nodes)
-              SimulationCanvasObject(
-                node: node,
-                edges: [...edges.where((e) => e.source == node)],
-                child: Container(
-                  width: 10,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    shape: BoxShape.circle,
+              if (!node.isNaN)
+                SimulationCanvasObject(
+                  node: node,
+                  edges: [...edges.where((e) => e.source == node)],
+                  child: Container(
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                 ),
-              ),
           ],
         ),
       ),
