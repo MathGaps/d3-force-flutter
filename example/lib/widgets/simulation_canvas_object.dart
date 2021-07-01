@@ -8,11 +8,13 @@ class SimulationCanvasObject
     required Widget child,
     required this.node,
     required this.edges,
+    required this.constraints,
     Key? key,
   }) : super(child: child, key: key);
 
   final Node node;
   final List<Edge> edges;
+  final BoxConstraints constraints;
 
   @override
   void applyParentData(RenderObject renderObject) {
@@ -24,6 +26,10 @@ class SimulationCanvasObject
 
     if (parentData.edges != edges) {
       parentData.edges = edges;
+    }
+
+    if (parentData.constraints != constraints) {
+      parentData.constraints = constraints;
     }
 
     final targetObject = renderObject.parent;

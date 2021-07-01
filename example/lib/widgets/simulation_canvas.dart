@@ -18,9 +18,13 @@ class SimulationCanvas extends MultiChildRenderObjectWidget {
 }
 
 class SimulationCanvasParentData extends ContainerBoxParentData<RenderBox> {
-  SimulationCanvasParentData({required this.edges});
+  SimulationCanvasParentData({
+    required this.edges,
+    required this.constraints,
+  });
 
   List<Edge> edges;
+  BoxConstraints constraints;
 }
 
 class RenderSimulationCanvas extends RenderBox
@@ -30,7 +34,10 @@ class RenderSimulationCanvas extends RenderBox
   @override
   void setupParentData(covariant RenderObject child) {
     if (child.parentData is! SimulationCanvasParentData) {
-      child.parentData = SimulationCanvasParentData(edges: []);
+      child.parentData = SimulationCanvasParentData(
+        edges: [],
+        constraints: BoxConstraints.tight(Size(0, 0)),
+      );
     }
   }
 
@@ -38,7 +45,6 @@ class RenderSimulationCanvas extends RenderBox
   void paint(PaintingContext context, Offset offset) {
     final canvas = context.canvas;
     canvas.save();
-    offset += Offset(size.width / 2, size.height / 2);
 
     RenderBox? child = firstChild;
 
@@ -83,11 +89,11 @@ class RenderSimulationCanvas extends RenderBox
 
       if (!dry) {
         child.layout(
-          constraints,
+          childParentData.constraints,
           parentUsesSize: true,
         );
       } else {
-        child.getDryLayout(constraints);
+        child.getDryLayout(childParentData.constraints);
       }
 
       child = childParentData.nextSibling;
@@ -145,5 +151,10 @@ class RenderSimulationCanvas extends RenderBox
   @override
   double? computeDistanceToActualBaseline(TextBaseline baseline) {
     return defaultComputeDistanceToFirstActualBaseline(baseline);
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
+    return defaultHitTestChildren(result, position: position);
   }
 }
