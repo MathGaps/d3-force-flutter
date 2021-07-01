@@ -19,6 +19,8 @@ class _CanvasScreenState extends State<CanvasScreen>
   late final Ticker _ticker;
   late final f.ForceSimulation simulation;
   late final List<f.Edge> edges;
+  late final List<int> edgeCounts;
+  int maxEdgeCount = 0;
   int i = 0;
 
   @override
@@ -28,33 +30,35 @@ class _CanvasScreenState extends State<CanvasScreen>
     final size = MediaQuery.of(context).size;
 
     final nodes = List.generate(
-      100,
-      (index) => f.Node(
-        x: size.width / 2,
-        y: size.height / 2,
-      ),
+      140,
+      (index) => f.Node(),
     );
     final r = Random();
     edges = [
       for (final n in nodes)
         if (r.nextDouble() < 0.8) ...[
-          for (int i = 0; i < (r.nextDouble() * 3).toInt(); i++)
+          for (int i = 0; i < (r.nextDouble() * 5).toInt(); i++)
             f.Edge(
               source: n,
               target: nodes[(nodes.length * r.nextDouble()).toInt()],
             ),
         ]
     ];
-    simulation = f.ForceSimulation()
+
+    simulation = f.ForceSimulation(
+      phyllotaxisX: size.width / 2,
+      phyllotaxisY: size.height / 2,
+      phyllotaxisRadius: 20,
+    )
       ..nodes = nodes
-      // ..setForce('collide', f.Collide(radius: 10))
+      ..setForce('collide', f.Collide(radius: 10))
       // ..setForce('radial', f.Radial(radius: 400))
-      ..setForce('manyBody', f.ManyBody())
+      ..setForce('manyBody', f.ManyBody(strength: -40))
       // ..setForce(
       //     'center', f.Center(size.width / 2, size.height / 2, strength: 0.5))
       ..setForce(
         'edges',
-        f.Edges(edges: edges, distance: 15),
+        f.Edges(edges: edges, distance: 30),
       )
       ..setForce('x', f.XPositioning(x: size.width / 2))
       ..setForce('y', f.YPositioning(y: size.height / 2))
@@ -62,12 +66,23 @@ class _CanvasScreenState extends State<CanvasScreen>
 
     _ticker = this.createTicker((_) {
       i++;
-      // if (i % 10 != 0) return;
+      // if (i% 10 != 0) return;
       setState(() {
         simulation.tick();
       });
     })
       ..start();
+
+    edgeCounts = List.filled(nodes.length, 0);
+    for (int i = 0; i < edges.length; i++) {
+      final edge = edges[i];
+      edge.index = i;
+      edgeCounts[edge.source.index!] += 1;
+      edgeCounts[edge.target.index!] += 1;
+    }
+    for (final count in edgeCounts) {
+      if (count > maxEdgeCount) maxEdgeCount = count;
+    }
   }
 
   @override
@@ -84,6 +99,7 @@ class _CanvasScreenState extends State<CanvasScreen>
 
     return Scaffold(
       body: Container(
+        color: Colors.black,
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: ConstrainedBox(
@@ -92,33 +108,40 @@ class _CanvasScreenState extends State<CanvasScreen>
             children: [
               for (final node in simulation.nodes)
                 if (!node.isNaN)
-                  SimulationCanvasObject(
-                    constraints: BoxConstraints.tight(Size(10, 10)),
-                    node: node,
-                    edges: [...edges.where((e) => e.source == node)],
-                    child: NodeHitTester(
-                      node,
-                      onDragUpdate: (update) {
-                        node
-                          ..fx = update.globalPosition.dx
-                          ..fy = update.globalPosition.dy;
-                        simulation..alpha = 1;
-                      },
-                      onDragEnd: (_) {
-                        node
-                          ..fx = null
-                          ..fy = null;
-                      },
-                      child: Container(
-                        width: 10,
-                        height: 10,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          shape: BoxShape.circle,
+                  Builder(builder: (context) {
+                    final double weight = maxEdgeCount == 0
+                        ? 0
+                        : edgeCounts[node.index!] / maxEdgeCount;
+                    return SimulationCanvasObject(
+                      weight: weight,
+                      constraints: BoxConstraints.tight(Size(10, 10)),
+                      node: node,
+                      edges: [...edges.where((e) => e.source == node)],
+                      child: NodeHitTester(
+                        node,
+                        onDragUpdate: (update) {
+                          node
+                            ..fx = update.globalPosition.dx
+                            ..fy = update.globalPosition.dy;
+                          simulation..alpha = 0.3;
+                        },
+                        onDragEnd: (_) {
+                          node
+                            ..fx = null
+                            ..fy = null;
+                        },
+                        child: Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white),
+                            color: Colors.white.withOpacity(sqrt(weight)),
+                            shape: BoxShape.circle,
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
             ],
           ),
         ),

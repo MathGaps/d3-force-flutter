@@ -20,10 +20,12 @@ class SimulationCanvas extends MultiChildRenderObjectWidget {
 class SimulationCanvasParentData extends ContainerBoxParentData<RenderBox> {
   SimulationCanvasParentData({
     required this.edges,
+    required this.weight,
     required this.constraints,
   });
 
   List<Edge> edges;
+  double weight;
   BoxConstraints constraints;
 }
 
@@ -36,6 +38,7 @@ class RenderSimulationCanvas extends RenderBox
     if (child.parentData is! SimulationCanvasParentData) {
       child.parentData = SimulationCanvasParentData(
         edges: [],
+        weight: 0,
         constraints: BoxConstraints.tight(Size(0, 0)),
       );
     }
@@ -56,7 +59,7 @@ class RenderSimulationCanvas extends RenderBox
           pd.offset + offset + edgeOffset,
           Offset(edge.target.x, edge.target.y) + offset + edgeOffset,
           Paint()
-            ..color = Colors.grey
+            ..color = Colors.grey.withOpacity(pd.weight)
             ..strokeWidth = 0.75,
         );
       }

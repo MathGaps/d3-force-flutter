@@ -9,12 +9,14 @@ class SimulationCanvasObject
     required this.node,
     required this.edges,
     required this.constraints,
+    required this.weight,
     Key? key,
   }) : super(child: child, key: key);
 
   final Node node;
   final List<Edge> edges;
   final BoxConstraints constraints;
+  final double weight;
 
   @override
   void applyParentData(RenderObject renderObject) {
@@ -30,6 +32,10 @@ class SimulationCanvasObject
 
     if (parentData.constraints != constraints) {
       parentData.constraints = constraints;
+    }
+
+    if (parentData.weight != weight) {
+      parentData.weight = weight;
     }
 
     final targetObject = renderObject.parent;
