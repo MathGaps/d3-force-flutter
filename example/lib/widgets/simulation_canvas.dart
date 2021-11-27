@@ -55,9 +55,10 @@ class RenderSimulationCanvas extends RenderBox
       final pd = child.parentData! as SimulationCanvasParentData;
       final edgeOffset = Offset(child.size.width / 2, child.size.height / 2);
       for (final edge in pd.edges) {
+        final e = edge.target;
         canvas.drawLine(
           pd.offset + offset + edgeOffset,
-          Offset(edge.target.x, edge.target.y) + offset + edgeOffset,
+          Offset(e.x, e.y) + offset + edgeOffset,
           Paint()
             ..color = Colors.grey.withOpacity(pd.weight)
             ..strokeWidth = 0.75,

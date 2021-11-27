@@ -123,12 +123,13 @@ class _CanvasScreenState extends State<CanvasScreen>
                           node
                             ..fx = update.globalPosition.dx
                             ..fy = update.globalPosition.dy;
-                          simulation..alpha = 0.3;
+                          simulation..alphaTarget = 0.5;
                         },
                         onDragEnd: (_) {
                           node
                             ..fx = null
                             ..fy = null;
+                          simulation.alphaTarget = 0;
                         },
                         child: Container(
                           width: 10,

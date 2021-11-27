@@ -7,8 +7,8 @@ abstract class IForce<N extends Node> {
 
   List<N>? nodes;
 
-  external void initialize(List<N> _nodes, LCG? random);
-  external void call([double alpha = 1]);
+  void initialize(List<N> _nodes, LCG? random);
+  void call([double alpha = 1]);
 }
 
 extension IForceX<N extends Node> on IForce<N> {
